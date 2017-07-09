@@ -7,39 +7,43 @@
 </head>
 <body>
 
-<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="js/jQueryRotate.js"></script>
 <script type="text/javascript">
 <!--
-$(function(){
+window.onload=
+(function(){
+	'use strict';
+	var $=document.getElementById.bind(document);
 	// 画面サイズの取得
-	window_width = $(window).width();
-	window_height = $(window).height();
+	var window_width = window.innerWidth;
+	var window_height = window.innerHeight;
 
 	// 手持ち部分のサイズ
-	disable_range = window_width / 2 * 0.3;
+	var disable_range = window_width / 2 * 0.3;
 
+	var spinnerDiameter=(Math.min(window_width,window_height)*0.9).toString()+"px";
 	// スピナーのサイズの調節
-	$("#spinner img").css("width", window_width * 0.9 + "px");
-	$("#spinner img").css("height", window_width * 0.9 + "px");
+	$('spinnerBody').style.width=spinnerDiameter;
+	$('spinnerBody').style.height=spinnerDiameter;
 
 	// タッチ検出の間隔を開ける
-	interval = false;
+	var interval = false;
 
 	// タッチしているかフラグ
-	touch = false;
+	var touch = false;
 
 	// 初期角度
-	angle = 0;
+	var angle = 0;
 
 	// 速度
-	diff = 0;
+	var diff = 0;
+	var old_angle;
+	var x,y;
 
 	// 回転アニメーション
 	setInterval(function(){
 		// アニメーション
 		angle += diff;
-		$("#spinner img").rotate(angle);
+		$('spinnerBody').style.transform='rotate('+angle+'deg)';
 
 		// 速度減衰
 		diff *= 0.9995;
@@ -48,8 +52,8 @@ $(function(){
 	},15);
 
 	// タッチ開始したとき
-	$("#spinner").bind('touchstart', function() {
-		event.preventDefault();	
+	$('spinner').addEventListener('touchstart', function(event) {
+		event.preventDefault();
 		x = event.changedTouches[0].pageX - window_width / 2;
 		y = event.changedTouches[0].pageY - window_height / 2;
 
@@ -61,7 +65,7 @@ $(function(){
 	});
 
 	// タッチ移動したとき
-	$("#spinner").bind('touchmove', function() {
+	$('spinner').addEventListener('touchmove', function(event) {
 		if(interval){
 			event.preventDefault();
 			x = event.changedTouches[0].pageX - window_width / 2;
@@ -69,12 +73,12 @@ $(function(){
 
 			// 手持ち部分外なら角速度算出
 			if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
-				new_angle = Math.atan(x / y) / 3.141592 * 180;
+				var new_angle = Math.atan(x / y) / 3.141592 * 180;
 				diff = old_angle - new_angle;
 				old_angle = new_angle;
 
 				if(diff > 90){ diff -= 180 };
-				if(diff < -90){ diff += 180 }; 
+				if(diff < -90){ diff += 180 };
 
 				interval = false;
 			}
@@ -82,7 +86,7 @@ $(function(){
 	});
 
 	// タッチ終了したとき
-	$("#spinner").bind('touchend', function() {
+	$('spinner').addEventListener('touchend', function(event) {
 		// 手持ち部分外ならタッチ終了フラグ
 		if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
 			touch = false;
@@ -100,7 +104,7 @@ html {
 	height: 100%;
 	display: table;
 }
- 
+
 body {
 	padding: 0;
 	margin: 0 auto;
@@ -109,15 +113,14 @@ body {
 	vertical-align: middle;
 	overflow:hidden;
 }
- 
+
 #spinner{
 	vertical-align:middle;
 }
- 
 </style>
 <noscript>java scriptが有効になっていないため表示できません。</noscript>
 <div class="c1" id="spinner">
-<img src="img/handspinner.png">
+<img src="img/handspinner.png" id="spinnerBody">
 </div>
 </body>
 </html>
