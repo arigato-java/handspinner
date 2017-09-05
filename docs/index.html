@@ -51,48 +51,95 @@ window.onload=
 		interval=true;
 	},15);
 
-	// タッチ開始したとき
-	$('spinner').addEventListener('touchstart', function(event) {
-		event.preventDefault();
-		x = event.changedTouches[0].pageX - window_width / 2;
-		y = event.changedTouches[0].pageY - window_height / 2;
 
-		// 手持ち部分外なら初期角度算出
-		if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
-			old_angle = Math.atan(x / y) / 3.141592 * 180;
-			touch = true;
-		}
-	});
+	// タッチの位置を取得する
+	var touchPos = function(event) {
+		return {
+			pageX: event.changedTouches[0].pageX,
+			pageY: event.changedTouches[0].pageY
+		};
+	};
+
+	// マウスの位置を取得する
+	var mousePos = function(event) {
+		return {
+			pageX: event.pageX,
+			pageY: event.pageY
+		};
+	};
+
+	// タッチ等の開始イベント
+	var touchStart = function(getPosition) {
+		return function(event) {
+			event.preventDefault();
+
+			var pos = getPosition(event);
+			x = pos.pageX - window_width / 2;
+			y = pos.pageY - window_height / 2;
+
+			// 手持ち部分外なら初期角度算出
+			if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
+				old_angle = Math.atan(x / y) / 3.141592 * 180;
+				touch = true;
+			}
+		};
+	};
+
+	// タッチ移動等イベント
+	var touchMove = function(getPosition) {
+		return function(event) {
+			if(interval && touch){
+				event.preventDefault();
+
+				var pos = getPosition(event);
+				x = pos.pageX - window_width / 2;
+				y = pos.pageY - window_height / 2;
+
+				// 手持ち部分外なら角速度算出
+				if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
+					var new_angle = Math.atan(x / y) / 3.141592 * 180;
+					diff = old_angle - new_angle;
+					old_angle = new_angle;
+
+					if(diff > 90){ diff -= 180 };
+					if(diff < -90){ diff += 180 };
+
+					interval = false;
+				}
+			}
+		};
+	};
+
+	// タッチ等の終了
+	var touchEnd = function() {
+		return function(event) {
+			// 手持ち部分外ならタッチ終了フラグ
+			if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
+				touch = false;
+			}
+		};
+	};
+
+	// タッチ開始したとき
+	$('spinner').addEventListener('touchstart', touchStart(touchPos));
+
+	// マウス押下したとき
+	$('spinner').addEventListener('mousedown', touchStart(mousePos));
 
 	// タッチ移動したとき
-	$('spinner').addEventListener('touchmove', function(event) {
-		if(interval){
-			event.preventDefault();
-			x = event.changedTouches[0].pageX - window_width / 2;
-			y = event.changedTouches[0].pageY - window_height / 2;
+	$('spinner').addEventListener('touchmove', touchMove(touchPos));
 
-			// 手持ち部分外なら角速度算出
-			if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
-				var new_angle = Math.atan(x / y) / 3.141592 * 180;
-				diff = old_angle - new_angle;
-				old_angle = new_angle;
-
-				if(diff > 90){ diff -= 180 };
-				if(diff < -90){ diff += 180 };
-
-				interval = false;
-			}
-		}
-	});
+	// マウス移動したとき
+	$('spinner').addEventListener('mousemove', touchMove(mousePos));
 
 	// タッチ終了したとき
-	$('spinner').addEventListener('touchend', function(event) {
-		// 手持ち部分外ならタッチ終了フラグ
-		if(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) > disable_range){
-			touch = false;
-		}
-	});
+	$('spinner').addEventListener('touchend', touchEnd());
 
+	// マウスボタンを離したとき
+	// #spinner の mouseup だけではカーソルが要素外にあるときに
+	// イベントが発火されない。そのための暫定処置。
+	window.addEventListener('mouseup', touchEnd());
+	
 });
 // -->
 </script>
@@ -120,7 +167,7 @@ body {
 </style>
 <noscript>java scriptが有効になっていないため表示できません。</noscript>
 <div class="c1" id="spinner">
-<img src="img/handspinner.png" id="spinnerBody">
+<img src="img/handspinner.png" id="spinnerBody" draggable="false">
 </div>
 </body>
 </html>
