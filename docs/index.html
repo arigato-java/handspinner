@@ -39,6 +39,17 @@ window.onload=
 	var old_angle;
 	var x,y;
 
+	// 回転数 
+    // interval=15msec, 1min/15msec=60sec/0.015sec=4000, 1intervalの間に1/4000回転してれば1rpm
+    // 1/4000回転は360/4000=0.9度, rpm=速度diffの10/9
+	var max = 0;
+	function showRpm(diff){
+		var rpm = Math.round(Math.abs(diff)*10/9);
+		max = Math.max(max, rpm);
+		var str = 'rpm: '+ rpm +' (max: '+ max+')';
+		document.getElementById("rpm").innerHTML=str;
+	}
+
 	// 回転アニメーション
 	setInterval(function(){
 		// アニメーション
@@ -47,6 +58,8 @@ window.onload=
 
 		// 速度減衰
 		diff *= 0.9995;
+		//回転数
+		showRpm(diff);
 
 		interval=true;
 	},15);
@@ -166,6 +179,8 @@ body {
 }
 </style>
 <noscript>java scriptが有効になっていないため表示できません。</noscript>
+<div class="rpm" id="rpm"></div>
+
 <div class="c1" id="spinner">
 <img src="img/handspinner.png" id="spinnerBody" draggable="false">
 </div>
