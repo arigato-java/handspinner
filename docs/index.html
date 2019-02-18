@@ -40,10 +40,10 @@ window.onload=
 	var x,y;
 
 	// 回転数 
-	// interval=15msec, 1min/15msec=60sec/0.015sec=4000, 1intervalの間に1/4000回転してれば1rpm
-	// 1/4000回転は360/4000=0.9度, rpm=速度diffの10/9
+	// interval=15msec, 1min/15msec=60sec/0.015sec=4000, 1intervalの間に1回転(360deg)してれば4000rpm
+	// 4000/360=100/9(約11.11) ∴rpm=速度diff*100/9
 	function showRpm(diff){
-		var rpm = Math.round(Math.abs(diff)*10/9);
+		var rpm = Math.round(Math.abs(diff)*100/9);
 		var str = 'rpm: '+ rpm;
 		document.getElementById("rpm").innerHTML=str;
 	}
