@@ -40,8 +40,8 @@ window.onload=
 	var x,y;
 
 	// 回転数 
-    // interval=15msec, 1min/15msec=60sec/0.015sec=4000, 1intervalの間に1/4000回転してれば1rpm
-    // 1/4000回転は360/4000=0.9度, rpm=速度diffの10/9
+	// interval=15msec, 1min/15msec=60sec/0.015sec=4000, 1intervalの間に1/4000回転してれば1rpm
+	// 1/4000回転は360/4000=0.9度, rpm=速度diffの10/9
 	var max = 0;
 	function showRpm(diff){
 		var rpm = Math.round(Math.abs(diff)*10/9);
