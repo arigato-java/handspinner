@@ -39,6 +39,14 @@ window.onload=
 	var old_angle;
 	var x,y;
 
+	// 回転数 
+	// interval=15msec, 1min/15msec=60sec/0.015sec=4000, 1intervalの間に1回転(360deg)してれば4000rpm
+	// 4000/360=100/9(約11.11) ∴rpm=速度diff*100/9
+	function showRpm(diff){
+		var rpm = Math.round(Math.abs(diff)*100/9);
+		document.getElementById("rpm").innerHTML=rpm;
+	}
+
 	// 回転アニメーション
 	setInterval(function(){
 		// アニメーション
@@ -47,6 +55,8 @@ window.onload=
 
 		// 速度減衰
 		diff *= 0.9995;
+		//回転数
+		showRpm(diff);
 
 		interval=true;
 	},15);
@@ -164,8 +174,20 @@ body {
 #spinner{
 	vertical-align:middle;
 }
+
+.rpm {
+  float: left;
+  vertical-align: baseline;
+  /* border: 1px solid black; */
+}
 </style>
 <noscript>java scriptが有効になっていないため表示できません。</noscript>
+<div>
+  <div class="rpm">rpm:</div>
+  <div class="rpm" id="rpm" style="text-align:right; width: 28px"></div>
+  <div class="rpm" style="margin-left: 2px;">億</div>
+</div>
+
 <div class="c1" id="spinner">
 <img src="img/handspinner.png" id="spinnerBody" draggable="false">
 </div>
