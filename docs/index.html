@@ -44,8 +44,7 @@ window.onload=
 	// 4000/360=100/9(約11.11) ∴rpm=速度diff*100/9
 	function showRpm(diff){
 		var rpm = Math.round(Math.abs(diff)*100/9);
-		var str = 'rpm: '+ rpm;
-		document.getElementById("rpm").innerHTML=str;
+		document.getElementById("rpm").innerHTML=rpm;
 	}
 
 	// 回転アニメーション
@@ -175,9 +174,19 @@ body {
 #spinner{
 	vertical-align:middle;
 }
+
+.rpm {
+  float: left;
+  vertical-align: baseline;
+  /* border: 1px solid black; */
+}
 </style>
 <noscript>java scriptが有効になっていないため表示できません。</noscript>
-<div class="rpm" id="rpm"></div>
+<div>
+  <div class="rpm">rpm:</div>
+  <div class="rpm" id="rpm" style="text-align:right; width: 25px"></div>
+  <div class="rpm">億</div>
+</div>
 
 <div class="c1" id="spinner">
 <img src="img/handspinner.png" id="spinnerBody" draggable="false">
