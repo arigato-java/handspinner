@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>hand spinner</title>
+<!-- script src="http://bernii.github.io/gauge.js/dist/gauge.min.js" --> 
 </head>
 <body>
 
@@ -44,7 +45,7 @@ window.onload=
 	// 4000/360=100/9(約11.11) ∴rpm=速度diff*100/9
 	function showRpm(diff){
 		var rpm = Math.round(Math.abs(diff)*100/9);
-		document.getElementById("rpm").innerHTML=rpm;
+		document.getElementById("rpm").innerHTML=rpm + '億';
 	}
 
 	// 回転アニメーション
@@ -177,19 +178,23 @@ body {
 
 .rpm {
   float: left;
-  vertical-align: baseline;
+ /* align-content: flex-end; */
+  vertical-align: bottom;
+  font-size: 16px;
+  font-family: monospace;
+  margin: 2px; 
   /* border: 1px solid black; */
 }
 </style>
 <noscript>java scriptが有効になっていないため表示できません。</noscript>
-<div>
-  <div class="rpm">rpm:</div>
-  <div class="rpm" id="rpm" style="text-align:right; width: 28px"></div>
-  <div class="rpm" style="margin-left: 2px;">億</div>
-</div>
 
 <div class="c1" id="spinner">
 <img src="img/handspinner.png" id="spinnerBody" draggable="false">
+</div>
+
+<div style="float: right;">
+  <div class="rpm" >rpm: </div>
+  <div class="rpm" id="rpm" style="text-align:right; width: 50px"></div>
 </div>
 </body>
 </html>
